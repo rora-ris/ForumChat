@@ -5,6 +5,8 @@ function Chat() {
   const [message, setMessage] = useState("");
   const [messageList, setMessageList] = useState([]);
   const socketRef = useRef(null);
+  const socketUrl =
+    process.env.REACT_APP_SOCKET_URL || window.location.origin;
 
   const sendMessage = () => {
     const trimmed = message.trim();
@@ -15,17 +17,23 @@ function Chat() {
   };
 
   useEffect(() => {
-    const socket = io("http://localhost:3001");
+    const socket = io(socketUrl);
     socketRef.current = socket;
 
     const handleReceiveMessage = (data) => {
       setMessageList((list) => [...list, data]);
     };
 
+    const handleChatHistory = (data) => {
+      setMessageList(Array.isArray(data) ? data : []);
+    };
+
     socket.on("receive_message", handleReceiveMessage);
+    socket.on("chat_history", handleChatHistory);
 
     return () => {
       socket.off("receive_message", handleReceiveMessage);
+      socket.off("chat_history", handleChatHistory);
       socket.disconnect();
       socketRef.current = null;
     };
