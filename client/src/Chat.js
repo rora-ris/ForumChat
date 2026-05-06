@@ -16,6 +16,12 @@ function Chat() {
     }
   };
 
+  const clearMessages = () => {
+    if (socketRef.current) {
+      socketRef.current.emit("clear_messages");
+    }
+  };
+
   useEffect(() => {
     const socket = io(socketUrl);
     socketRef.current = socket;
@@ -28,12 +34,18 @@ function Chat() {
       setMessageList(Array.isArray(data) ? data : []);
     };
 
+    const handleChatCleared = () => {
+      setMessageList([]);
+    };
+
     socket.on("receive_message", handleReceiveMessage);
     socket.on("chat_history", handleChatHistory);
+    socket.on("chat_cleared", handleChatCleared);
 
     return () => {
       socket.off("receive_message", handleReceiveMessage);
       socket.off("chat_history", handleChatHistory);
+      socket.off("chat_cleared", handleChatCleared);
       socket.disconnect();
       socketRef.current = null;
     };
@@ -49,7 +61,12 @@ function Chat() {
     <section className="chat">
       <div className="chat-header">
         <h2>Ruang Obrolan</h2>
-        <span className="chat-status">Online</span>
+        <div className="chat-actions">
+          <button className="chat-clear" type="button" onClick={clearMessages}>
+            Hapus Semua
+          </button>
+          <span className="chat-status">Online</span>
+        </div>
       </div>
       <div className="chat-messages" aria-live="polite">
         {messageList.length === 0 ? (

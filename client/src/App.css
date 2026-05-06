@@ -55,6 +55,27 @@
   border-bottom: 1px solid var(--border-soft);
   background: linear-gradient(135deg, #f5f8fc 0%, #eef3f9 100%);
 }
+.chat-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.chat-clear {
+  border: 1px solid var(--border-soft);
+  background: #ffffff;
+  color: var(--text-muted);
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.chat-clear:hover {
+  border-color: var(--border-strong);
+  color: var(--text-primary);
+}
 
 .chat-header h2 {
   margin: 0;
