@@ -63,6 +63,15 @@ io.on("connection", (socket) => {
     }
   });
 
+  socket.on("clear_messages", async () => {
+    try {
+      await dbPool.query("DELETE FROM messages");
+      io.emit("chat_cleared");
+    } catch (error) {
+      console.error("Failed to clear messages", error);
+    }
+  });
+
   socket.on("disconnect", () => {
     console.log("User disconnected:", socket.id);
   });
